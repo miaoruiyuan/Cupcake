@@ -11,7 +11,7 @@
 </p>
 
 ## Introduction
-Cupcake is a framework that allow you to easily create and layout UI components for iOS 8.0+. It use chaining syntax and provides some frequent used functionalities that are missing in UIKit. 
+Cupcake is a framework that allow you to easily create and layout UI components for iOS 15.0+. It use chaining syntax and provides some frequent used functionalities that are missing in UIKit. 
 
 ---
 ## Easy way to create UIFont, UIImage and UIColor objects
@@ -215,6 +215,21 @@ You can present `Alert` And `ActionSheet` using the chaining syntax as well.
 
 
 ## Installation
+
+### Swift Package Manager
+Cupcake can be added to your project using Swift Package Manager. In Xcode:
+
+1. Go to **File** → **Add Package Dependencies**
+2. Enter the repository URL: `https://github.com/nerdycat/Cupcake.git`
+3. Choose the version rule and add the package
+
+Or add it to your `Package.swift` file:
+
+```swift
+dependencies: [
+    .package(url: "https://github.com/nerdycat/Cupcake.git", from: "1.3.1")
+]
+```
 
 ### Cocoapods
 Cupcake can be added to your project using CocoaPods by adding the following line to your Podfile:

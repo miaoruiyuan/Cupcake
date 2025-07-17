@@ -166,7 +166,7 @@ public extension UIButton {
     }
     
     /**
-     * Setting contentEdgeInsets
+     * Setting button content insets using UIButton.Configuration (iOS 15+)
      * Usages:
         .padding(10)                //top: 10, left: 10, bottom: 10, right: 10
         .padding(10, 20)            //top: 10, left: 20, bottom: 10, right: 20
@@ -174,41 +174,47 @@ public extension UIButton {
         .padding(10, 20, 30, 40)    //top: 10, left: 20, bottom: 30, right: 40
      */
     @discardableResult func padding(_ contentEdgeInsets: CGFloat...) -> Self {
-        cpk_updatePadding(contentEdgeInsets, forView: self)
+        if self.configuration == nil {
+            self.configuration = UIButton.Configuration.plain()
+        }
+        
+        let insets = cpk_edgeInsetsFromArray(contentEdgeInsets)
+        self.configuration?.contentInsets = NSDirectionalEdgeInsets(
+            top: insets.top,
+            leading: insets.left,
+            bottom: insets.bottom,
+            trailing: insets.right
+        )
         return self
     }
     
     /**
-     * Setting spacing between title and image.
+     * Setting spacing between title and image using UIButton.Configuration (iOS 15+)
      * Usages:
         .gap(10)
      */
     @objc @discardableResult func gap(_ spacing: CGFloat) -> Self {
         self.cpkGap = spacing
-        let halfGap = spacing / 2
         
-        self.titleEdgeInsets = UIEdgeInsetsMake_(0, halfGap, 0, -halfGap)
-        self.imageEdgeInsets = UIEdgeInsetsMake_(0, -halfGap, 0, halfGap)
-        
-        var insets = self.cpkInsets ?? UIEdgeInsetsMake_(0, 0, 0, 0)
-        insets.left += halfGap
-        insets.right += halfGap
-        self.contentEdgeInsets = insets
+        if self.configuration == nil {
+            self.configuration = UIButton.Configuration.plain()
+        }
+        self.configuration?.imagePadding = spacing
         
         return self
     }
     
     /**
-     * Swapping title and image position.
+     * Swapping title and image position using UIButton.Configuration (iOS 15+)
      * Usages:
         .reversed()
         .reversed(false)
      */
     @objc @discardableResult func reversed(_ reversed: Bool = true) -> Self {
-        let t = reversed ? CATransform3DMakeScale(-1, 1, 1) : CATransform3DIdentity
-        self.layer.sublayerTransform = t
-        self.imageView?.layer.transform = t
-        self.titleLabel?.layer.transform = t
+        if self.configuration == nil {
+            self.configuration = UIButton.Configuration.plain()
+        }
+        self.configuration?.imagePlacement = reversed ? .trailing : .leading
         return self
     }
     

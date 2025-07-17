@@ -369,7 +369,16 @@ func cpk_updatePadding(_ padding: [CGFloat], forView view: UIView) {
         
         insets.left += halfGap
         insets.right += halfGap
-        button.contentEdgeInsets = insets
+        
+        if button.configuration == nil {
+            button.configuration = UIButton.Configuration.plain()
+        }
+        button.configuration?.contentInsets = NSDirectionalEdgeInsets(
+            top: insets.top,
+            leading: insets.left,
+            bottom: insets.bottom,
+            trailing: insets.right
+        )
         
     } else if let textField = view as? UITextField {
         textField.cpkPadding = cpk_edgeInsetsFromArray(padding)
@@ -1083,7 +1092,7 @@ extension CPKViewPinOptions : ExpressibleByIntegerLiteral, ExpressibleByFloatLit
 
 
 #if swift(>=4.0)
-extension UILayoutPriority : ExpressibleByIntegerLiteral, ExpressibleByFloatLiteral {
+extension UILayoutPriority : @retroactive ExpressibleByIntegerLiteral, @retroactive ExpressibleByFloatLiteral {
     public init(integerLiteral value: Int) {
         self = UILayoutPriority(rawValue: Float(value))
     }
@@ -1091,7 +1100,7 @@ extension UILayoutPriority : ExpressibleByIntegerLiteral, ExpressibleByFloatLite
         self = UILayoutPriority(rawValue: value)
     }
 }
-extension NSAttributedStringKey_ : ExpressibleByStringLiteral {
+extension NSAttributedStringKey_ : @retroactive ExpressibleByStringLiteral {
     public init(stringLiteral value: String) {
         self = NSAttributedStringKey_(rawValue: value)
     }
@@ -1738,10 +1747,17 @@ public class StylesMaker: NSObject {
                 self.highBg(highBg)
             }
             
-            self.padding(button.contentEdgeInsets.top,
-                         button.contentEdgeInsets.left,
-                         button.contentEdgeInsets.bottom,
-                         button.contentEdgeInsets.right)
+            if let configuration = button.configuration {
+                self.padding(configuration.contentInsets.top,
+                             configuration.contentInsets.leading,
+                             configuration.contentInsets.bottom,
+                             configuration.contentInsets.trailing)
+            } else {
+                self.padding(button.contentEdgeInsets.top,
+                             button.contentEdgeInsets.left,
+                             button.contentEdgeInsets.bottom,
+                             button.contentEdgeInsets.right)
+            }
             
             if let gap = button.cpkGap {
                 self.gap(gap)
